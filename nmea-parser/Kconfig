@@ -1,0 +1,79 @@
+menu "NMEA Parser"
+
+config NMEA_PARSER_BUFFER_SIZE
+int "Size of Internel Buffer Used for NMEA Parser"
+range 0 2048
+default 1024
+
+config NMEA_TASK_STACK_SIZE
+int "nmea_parser task stack size"
+range 0 10240
+default 2048
+
+config NMEA_TASK_PRIORITY
+int "nmea_parser task's priority"
+range 0 24
+default 2
+
+menu "UART Configuration"
+config RECEIVER_BAUDRATE
+int "Baud Rate of GPS Receiver"
+range 0 115200
+default 9600
+
+config UART_PINS_RX
+int "Pin Num of UART-RX"
+range 0 100
+default 5
+
+config UART_PORT_NUM
+int "UART Port Number"
+range 0 2
+default 1
+endmenu
+
+config MAX_SATELLITES_IN_VIEW
+int "Maximum Amount of Visible Satellites"
+range 20 30
+default 12
+
+config GPS_TIME_ZONE
+int "GPS Time Zone"
+range -12 12
+default 8
+
+menu "NMEA Statements"
+config NMEA_STATEMENT_GGA
+    bool "GGA Statement"
+    default y
+    help
+        This statement must be enabled to parse:
+            Latitude, Longitude, Altitude
+            Number of satellites in use, fix (no fix, GPS, DGPS), UTC time
+config NMEA_STATEMENT_GSA
+    bool "GSA Statement"
+    default y
+    help
+        This statement must be enabled to parse:
+            Position/Vertical/Horizontal dilution of precision
+            Fix mode (no fix, 2D, 3D fix)
+            IDs of satellites in use
+config NMEA_STATEMENT_GSV
+    bool "GSV Statement"
+    default y
+    help
+        This statement must be enabled to parse:
+            Number of satellites in view
+            Optional details of each satellite in view.
+config NMEA_STATEMENT_RMC
+    bool "RMC Statement"
+    default y
+    help
+        This statement must be enabled to parse:
+            Validity of GPS signal
+            Ground speed in knots and coarse in degrees
+            Magnetic variation
+            UTC date
+endmenu
+
+endmenu

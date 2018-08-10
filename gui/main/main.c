@@ -249,7 +249,7 @@ static void spi_spec_init()
         .quadhd_io_num = -1,
         .max_transfer_sz = 12800};
     spi_device_interface_config_t devcfg = {
-        .clock_speed_hz = 26 * 1000 * 1000,
+        .clock_speed_hz = 10 * 1000 * 1000,
         .mode = 0,                               //SPI mode 0
         .spics_io_num = PIN_NUM_CS,              //CS pin
         .queue_size = 7,                         //We want to be able to queue 7 transactions at a time
