@@ -1,0 +1,11 @@
+menu "Example Configuration"
+
+config WIFI_SSID
+string "WiFi SSID"
+default "Xiaomi_024D_plus"
+
+config WIFI_PASSWORD
+string "WiFi Password"
+default "321woaini"
+
+endmenu
