@@ -1,0 +1,142 @@
+menu "GUI"
+
+############################Choice for GUI Framework##################
+choice GUI_FRAMEWORK
+    prompt "GUI Framework"
+    default GUI_FRAMEWORK_LVGL
+
+config GUI_FRAMEWORK_LVGL
+    bool "LittlevGL"
+endchoice
+
+############################Choice for LCD Colorspace##################
+choice LCD_COLORSPACE
+    prompt "LCD color space"
+    default LCD_COLORSPACE_R5G6B5
+
+config LCD_COLORSPACE_R8G8B8
+    bool "R8G8B8"
+config LCD_COLORSPACE_R5G6B5
+    bool "R5G6B5"
+
+endchoice
+
+############################Config of LCD Resolution#################
+menu "LCD Resolution"
+config LCD_X_RESOLUTION
+    int "LCD X Resolution"
+    range 0 1024
+    default 320 
+config LCD_Y_RESOLUTION
+    int "LCD Y Resolution"
+    range 0 1024
+    default 240
+endmenu
+
+############################Choice for LCD Driver####################
+menuconfig SPI_LCD
+    bool "SPI LCD Support"
+    default false
+
+if SPI_LCD
+choice LCD_DRIVER
+    prompt "LCD Controller"
+    default LCD_DRIVER_ILI9341
+config LCD_DRIVER_ST7789V
+    bool "ST7789V"
+config LCD_DRIVER_ILI9341
+    bool "ILI9341"
+endchoice
+
+menu "SPI Bus Pin Number"
+config LCD_SPI_SCLK
+    int "LCD CLK Pin"
+    range 0 100
+    default 22
+config LCD_SPI_MOSI
+    int "LCD MOSI Pin"
+    range 0 100
+    default 21
+config LCD_SPI_MISO
+    int "LCD MISO Pin"
+    range 0 100
+    default 27
+endmenu
+config LCD_SPI_CS
+    int "LCD CS Pin"
+    range 0 100
+    default 5
+config LCD_SPI_DC
+    int "LCD DC Pin"
+    range 0 100
+    default 19
+config LCD_SPI_RST
+    int "LCD RST Pin"
+    range 0 100
+    default 18
+config LCD_SPI_BCKL
+    int "LCD BCKL Pin"
+    range 0 100
+    default 23
+config LCD_SPI_CLK_SPEED_MHZ
+    int "SPI Clock MHz"
+    range 0 100
+    default 20
+endif
+
+############################Choice for Touch Panel Driver#############
+menuconfig SPI_TOUCH_PANEL
+    bool "Touch Panel Support"
+    default false
+
+if SPI_TOUCH_PANEL
+menu "SPI RTP Support"
+choice RTP_DRIVER
+    prompt "RTP Driver Support"
+    default RTP_DRIVER_XPT2046
+config RTP_DRIVER_XPT2046
+    bool "XPT2046"
+endchoice
+
+config SPI_TOUCH_PIN_SAME_LCD
+    bool "Touch Panel's SPI Bus Same to LCD"
+    default true
+
+if !SPI_TOUCH_PIN_SAME_LCD
+menu "SPI Bus Pin Number"
+config RTP_SPI_SCLK
+    int "RTP CLK Pin"
+    range 0 100
+    default 22
+config RTP_SPI_MOSI
+    int "RTP MOSI Pin"
+    range 0 100
+    default 21
+config RTP_SPI_MISO
+    int "RTP MISO Pin"
+    range 0 100
+    default 27
+endmenu
+endif
+
+config RTP_SPI_IRQ
+    int "RTP Interrupt Pin"
+    range 0 100
+    default 33
+config RTP_SPI_CS
+    int "RTP CS Pin"
+    range 0 100
+    default 32
+
+config RTP_SPI_CLK_SPEED_MHZ
+    int "SPI Clock MHz"
+    range 0 100
+    default 1
+
+endmenu
+config TOUCH_SWAP_X_Y
+    bool "Swap X with Y"
+    default true
+endif
+
+endmenu

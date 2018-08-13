@@ -39,7 +39,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
 		xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
 		break;
 	case SYSTEM_EVENT_STA_DISCONNECTED:
-		esp_wifi_connect();
+		esp_wifi_disconnect();
 		xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
 		break;
 	default:
@@ -54,7 +54,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
 
 static const char *REQUEST = "GET " WEB_URL " HTTP/1.1\r\n"
 							 "Host: " WEB_SERVER "\r\n"
-							 "User-Agent: esp-idf/1.0 esp32\r\n"
+							 "User-Agent: esp-idf/2.0 esp32\r\n"
 							 "\r\n";
 
 static void http_get_task(void *pvParameters)
@@ -180,5 +180,5 @@ void app_main(void)
 
 	initialise_wifi();
 
-	xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 5, NULL);
+	xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 2, NULL);
 }
