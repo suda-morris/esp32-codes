@@ -30,17 +30,13 @@
  */
 
 
-#ifndef __QRCODE_H_
-#define __QRCODE_H_
+#pragma once
 
-#ifndef __cplusplus
-typedef unsigned char bool;
-static const bool false = 0;
-static const bool true = 1;
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#include <stdint.h>
-
+#include "esp_types.h"
 
 // QR Code Format Encoding
 #define MODE_NUMERIC        0
@@ -71,13 +67,6 @@ typedef struct QRCode {
     uint8_t *modules;
 } QRCode;
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif  /* __cplusplus */
-
-
-
 uint16_t qrcode_getBufferSize(uint8_t version);
 
 int8_t qrcode_initText(QRCode *qrcode, uint8_t *modules, uint8_t version, uint8_t ecc, const char *data);
@@ -85,11 +74,6 @@ int8_t qrcode_initBytes(QRCode *qrcode, uint8_t *modules, uint8_t version, uint8
 
 bool qrcode_getModule(QRCode *qrcode, uint8_t x, uint8_t y);
 
-
-
 #ifdef __cplusplus
 }
-#endif  /* __cplusplus */
-
-
-#endif  /* __QRCODE_H_ */
+#endif
