@@ -2,6 +2,6 @@ set(COMPONENT_SRCS "native_ota_example.c")
 set(COMPONENT_ADD_INCLUDEDIRS ".")
 
 # Embed the server root certificate into the final binary
-set(COMPONENT_EMBED_TXTFILES ${PROJECT_PATH}/server_certs/certificate.pem)
+set(COMPONENT_EMBED_TXTFILES ${IDF_PROJECT_PATH}/server_certs/certificate.pem)
 
 register_component()

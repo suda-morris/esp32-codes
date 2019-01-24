@@ -18,7 +18,7 @@
 #include "esp_flash_partitions.h"
 #include "esp_partition.h"
 #include "driver/gpio.h"
-#include "esp32x_osl_eth.h"
+#include "esp_osl_eth.h"
 
 #define PIN_OSC_EN (17)
 #define EXAMPLE_SERVER_URL "https://192.168.2.160:8080/ota.bin"
@@ -60,17 +60,28 @@ void print_sha256(const uint8_t *image_hash, const char *label)
 }
 
 
-esp_err_t esp32x_eth_mac_lowlevel_init_extra(eth_mac_if_t *mac)
+#if CONFIG_RMII_CLK_INPUT
+#define PIN_OSC_EN (17)
+static esp_err_t esp_eth_lowlevel_init_extra(eth_mac_if_t *mac)
 {
-    ESP_LOGI(TAG, "esp32x_eth_mac_extra_lowlevel_init");
-
-    /* ESP32_Ethernet_V3 board need GPIO17 to Enable the External Oscillator */
+    /* ESP32_Ethernet_V3 board use GPIO17 to control the External Oscillator of PHY */
     gpio_pad_select_gpio(PIN_OSC_EN);
     gpio_set_direction(PIN_OSC_EN, GPIO_MODE_OUTPUT);
     gpio_set_level(PIN_OSC_EN, 1);
 
     return ESP_OK;
 }
+
+static esp_err_t esp_eth_lowlevel_deinit_extra(eth_mac_if_t *mac)
+{
+    /* ESP32_Ethernet_V3 board use GPIO17 to control the External Oscillator of PHY */
+    gpio_pad_select_gpio(PIN_OSC_EN);
+    gpio_set_direction(PIN_OSC_EN, GPIO_MODE_OUTPUT);
+    gpio_set_level(PIN_OSC_EN, 0);
+
+    return ESP_OK;
+}
+#endif
 
 static esp_err_t eth_event_handler(void *ctx, system_event_t *event)
 {
@@ -234,7 +245,12 @@ void app_main()
     event_group = xEventGroupCreate();
     tcpip_adapter_init();
     ESP_ERROR_CHECK(esp_event_loop_init(eth_event_handler, NULL));
-    ESP_ERROR_CHECK(esp32x_osl_eth_init());
+    esp_eth_config_t config = ESP_ETHERNET_DEFAULT_CONFIG();
+#if CONFIG_RMII_CLK_INPUT
+    config.mac.on_lowlevel_init = esp_eth_lowlevel_init_extra;
+    config.mac.on_lowlevel_deinit = esp_eth_lowlevel_deinit_extra;
+#endif
+    ESP_ERROR_CHECK(esp_osl_eth_init(&config));
 
     xTaskCreate(&ota_example_task, "ota_example_task", 8192, NULL, 5, NULL);
 }
